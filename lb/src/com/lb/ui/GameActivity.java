@@ -535,7 +535,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 	}
 	
 	private void forwardTerritory() {
-		if(gMap != null && mTerritoryMarkerList != null) {
+		if(gMap != null && mTerritoryMarkerList != null && mTerritoryMarkerList.size() > 0) {
 			TerritoryMarker tm = mTerritoryMarkerList.get(mTerritoryMarkerListIndex);
 			gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tm.getCenter(), 12));			
 			mTerritoryMarkerListIndex ++;
@@ -544,7 +544,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 	}
 	
 	private void backTerritory() {
-		if(gMap != null && mTerritoryMarkerList != null) {
+		if(gMap != null && mTerritoryMarkerList != null && mTerritoryMarkerList.size() > 0) {
 			TerritoryMarker tm = mTerritoryMarkerList.get(mTerritoryMarkerListIndex);
 			gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(tm.getCenter(), 12));
 			mTerritoryMarkerListIndex --;
