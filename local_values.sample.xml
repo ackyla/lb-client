@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- このファイルをコピーしてlocal_values.xmlにして使って下さい -->
+<!-- このファイルをコピーしてlb/res/values/local_values.xmlにして使って下さい -->
 <resources>
   <!-- string name="google_map_api_key">API_KEY</string -->
   <!-- string name="server_url">http://hoge.com</string -->
