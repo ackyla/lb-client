@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import com.lb.R;
 import com.lb.api.API;
 import com.lb.model.Session;
+import com.lb.model.User;
+import com.lb.model.UserGen;
 import com.lb.model.Utils;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -28,6 +30,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import net.vvakame.util.jsonpullparser.JsonFormatException;
+
+import java.io.IOException;
+
 public class SetAvatarActivity extends Activity {
 
 	private static final int REQUEST_CODE = 100;
@@ -39,8 +45,12 @@ public class SetAvatarActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_avatar);		
-		
-		Button bt = (Button) findViewById(R.id.bt_update);
+        setTitle("アバター設定");
+        final ImageView iv = (ImageView) findViewById(R.id.iv_avatar);
+        ImageLoader loader = ImageLoader.getInstance();
+        loader.displayImage(Session.getUser().getAvatar(), iv);
+
+        Button bt = (Button) findViewById(R.id.bt_update);
 		bt.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -60,8 +70,8 @@ public class SetAvatarActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
 			Uri uri = data.getData();
-			final ImageView iv = (ImageView) findViewById(R.id.iv_avatar);
-			ImageLoader loader = ImageLoader.getInstance();
+            final ImageView iv = (ImageView) findViewById(R.id.iv_avatar);
+            ImageLoader loader = ImageLoader.getInstance();
 			ImageSize imageSize = new ImageSize(AVATAR_WIDTH, AVATAR_HEIGHT);
 			DisplayImageOptions options = new DisplayImageOptions.Builder()
 			.imageScaleType(ImageScaleType.EXACTLY)
@@ -78,18 +88,22 @@ public class SetAvatarActivity extends Activity {
 						
 						@Override
 						public void onSuccess(JSONObject json) {
-							try {
-								ImageLoader loader = ImageLoader.getInstance();
-								DisplayImageOptions options = new DisplayImageOptions.Builder()
-						        .cacheInMemory(true)
-						        .cacheOnDisc(true)
-						        .build();
-								loader.displayImage(json.getString("avatar"), iv, options);
-								Toast.makeText(SetAvatarActivity.this, "アバターを変更しました", Toast.LENGTH_LONG).show();
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
+                            try {
+                                User user = UserGen.get(json.toString());
+                                ImageLoader loader = ImageLoader.getInstance();
+                                DisplayImageOptions options = new DisplayImageOptions.Builder()
+                                        .cacheInMemory(true)
+                                        .cacheOnDisc(true)
+                                        .build();
+                                loader.displayImage(user.getAvatar(), iv, options);
+                                Toast.makeText(SetAvatarActivity.this, "アバターを変更しました", Toast.LENGTH_LONG).show();
+                                Utils.updateSessionUserInfo(user);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JsonFormatException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
 						@Override
 						public void onFailure(Throwable throwable) {

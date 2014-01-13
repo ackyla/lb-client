@@ -72,13 +72,4 @@ public class Utils {
     public static LatLng getDefaultLatLng() {
     	return new LatLng(35.360549, 138.727786);
     }
-    
-    public static String getAbsoluteUrl(String relativeUrl) {
-		boolean debug = Session.getContext().getResources().getBoolean(R.bool.debug_mode);
-		String url = Session.getContext().getResources().getString(R.string.server_url);
-		if (debug) {
-			url = PreferenceManager.getDefaultSharedPreferences(Session.getContext()).getString(PreferenceScreenActivity.PREF_KEY_DEBUG_MODE_URL, url);
-		}
-		return url + relativeUrl;
-    }
 }

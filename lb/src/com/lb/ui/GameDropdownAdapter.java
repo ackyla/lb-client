@@ -51,11 +51,11 @@ public class GameDropdownAdapter extends ArrayAdapter<GameDropdownData>{
         tv3.setText("陣力 "+item.getGpsPoint()+"/"+item.getGpsPointMax());
         ImageView iv = (ImageView) view.findViewById(R.id.iv_avatar);
         ImageLoader loader = ImageLoader.getInstance();
-		DisplayImageOptions options = new DisplayImageOptions.Builder()
-        .cacheInMemory(true)
-        .cacheOnDisc(true)
-        .build();
-		loader.displayImage(Utils.getAbsoluteUrl(Session.getUser().getAvatar()), iv, options);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+        loader.displayImage(Session.getUser().getAvatar(), iv, options);
         return view;
     }
  
@@ -69,7 +69,15 @@ public class GameDropdownAdapter extends ArrayAdapter<GameDropdownData>{
         }
         GameDropdownData item = getItem(position);
         ImageView icon = (ImageView)view.findViewById(R.id.iv_avatar);
-        icon.setImageResource(item.getImage());
+        if(position == 0) {
+            ImageLoader loader = ImageLoader.getInstance();
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisc(true)
+                    .build();
+            loader.displayImage(Session.getUser().getAvatar(), icon, options);
+        }
+        else icon.setImageResource(item.getImage());
         //icon.setColorFilter(getContext().getColor(item.getColorId())));
         TextView tv1 = (TextView) view.findViewById(R.id.tv_title);
         tv1.setText(item.getTitle());

@@ -40,6 +40,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.vvakame.util.jsonpullparser.JsonFormatException;
+
 public class TerritoryDetailFragment extends Fragment {
 	
 	private static final int SUPPLY_GPS_POINT = 10;
@@ -52,7 +54,7 @@ public class TerritoryDetailFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		listener = (OnTerritoryDetailFragmentListener) activity;
+        listener = (OnTerritoryDetailFragmentListener) activity;
 	}
 	
 	@Override
@@ -159,12 +161,18 @@ public class TerritoryDetailFragment extends Fragment {
 							
 							@Override
 							public void onSuccess(JSONObject json) {
-								// TODO
-								User user = Session.getUser();
-								user.setGpsPoint(user.getGpsPoint() - SUPPLY_GPS_POINT);
-								Utils.updateSessionUserInfo(user);
-								listener.onSupply();
-								Toast.makeText(getActivity(), "回復しました", Toast.LENGTH_LONG).show();
+                                try {
+                                    User user = UserGen.get(json.getJSONObject("user").toString());
+                                    Utils.updateSessionUserInfo(user);
+                                    listener.onSupply();
+                                    Toast.makeText(getActivity(), "回復しました", Toast.LENGTH_LONG).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JsonFormatException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
 							}
 
 							@Override
