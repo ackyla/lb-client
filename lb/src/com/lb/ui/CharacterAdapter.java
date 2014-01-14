@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.lb.R;
 import com.lb.model.Character;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -27,7 +29,15 @@ public class CharacterAdapter extends ArrayAdapter<Character>{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Character item = (Character) getItem(position);
 		if (null == convertView) convertView = mLayoutInflater.inflate(R.layout.character_list_item, null);
-		
+
+        ImageView iv = (ImageView) convertView.findViewById(R.id.iv_avatar);
+        ImageLoader loader = ImageLoader.getInstance();
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+        loader.displayImage("http://placekitten.com/120/120", iv, options); // TODO
+
 		TextView tv1 = (TextView)convertView.findViewById(R.id.tv_name);
 		tv1.setText(item.getName());
 		

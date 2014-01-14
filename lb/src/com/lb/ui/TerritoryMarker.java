@@ -82,7 +82,11 @@ public class TerritoryMarker {
 		if (mCircle == null) return 100.0;
 		return mCircle.getRadius();
 	}
-	
+	public String getMarkerId() {
+        if (mMarker == null) return "0";
+        return mMarker.getId();
+    }
+
 	public void showInfoWindow() {
 		if(mMarker != null) mMarker.showInfoWindow();
 	}

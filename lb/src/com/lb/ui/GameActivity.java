@@ -3,6 +3,7 @@ package com.lb.ui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import net.vvakame.util.jsonpullparser.JsonFormatException;
@@ -45,6 +46,8 @@ import com.lb.ui.MapFragment.OnGoogleMapFragmentListener;
 import com.lb.ui.NotificationListFragment.OnNotificationListFragmentItemClickListener;
 import com.lb.ui.TerritoryDetailFragment.OnTerritoryDetailFragmentListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -60,6 +63,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -76,6 +80,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
@@ -93,6 +98,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
     private Integer mTerritoryId = 0;
     private LocationClient mLocationClient;
     private List<TerritoryMarker> mTerritoryMarkerList;
+    private HashMap<String, String> mMarkerIdUrlMap;
     private int mTerritoryMarkerListIndex = 0;
 	private final ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -310,7 +316,9 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 			gMap.clear();
 			if(mTerritoryMarkerList == null) mTerritoryMarkerList = new ArrayList<TerritoryMarker>();
 			mTerritoryMarkerList.clear();
-			
+            if(mMarkerIdUrlMap == null)mMarkerIdUrlMap = new HashMap<String, String>();
+            mMarkerIdUrlMap.clear();
+
 			// テリトリーを表示
 			API.getUserTerritories(Session.getUser(), new JsonHttpResponseHandler() {
 				
@@ -323,7 +331,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 				@Override
 				public void onSuccess(JSONArray jsonArray) {
 					List<Territory> territories = new ArrayList<Territory>();
-					
+
 					try {
 						territories = TerritoryGen.getList(jsonArray.toString());
 					} catch (IOException e1) {
@@ -352,6 +360,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 						}
 						
 						mTerritoryMarkerList.add(territoryMarker);
+                        mMarkerIdUrlMap.put(territoryMarker.getMarkerId(), "http://placekitten.com/48/48"); // TODO
 					}
 				}
 
@@ -378,7 +387,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 		
 		@Override
 		public View getInfoContents(Marker marker) {
-			showInfoWindow(marker, mWindow);
+            showInfoWindow(marker, mWindow);
 			return mWindow;
 		}
 
@@ -388,8 +397,15 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 		}
 		
 		private void showInfoWindow(Marker marker, View v) {
-			
-			TextView title = (TextView) v.findViewById(R.id.title);
+            ImageView avatar = (ImageView) v.findViewById(R.id.iv_avatar);
+            ImageLoader loader = ImageLoader.getInstance();
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .cacheOnDisc(true)
+                    .build();
+            if(mMarkerIdUrlMap != null) loader.displayImage(mMarkerIdUrlMap.get(marker.getId()), avatar, options);
+
+            TextView title = (TextView) v.findViewById(R.id.title);
 			title.setText(marker.getTitle());
 			
 			TextView snippet = (TextView) v.findViewById(R.id.snippet);

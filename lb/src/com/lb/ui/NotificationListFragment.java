@@ -47,6 +47,7 @@ public class NotificationListFragment extends ListFragment {
 				for(int i = jsonArray.length()-1; i >= 0; i --) {
 					try {
 						JSONObject json = jsonArray.getJSONObject(i);
+                        Log.i("dump", "json="+json);
 						NotificationData item = new NotificationData();
 						item.setId(json.getInt("notification_id"));
 						item.setRead(json.getBoolean("read"));

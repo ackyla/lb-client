@@ -7,6 +7,8 @@ import java.util.Locale;
 import com.lb.R;
 import com.lb.model.Territory;
 import com.lb.model.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.location.Address;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class TerritoryAdapter extends ArrayAdapter<Territory>{
@@ -32,8 +35,16 @@ public class TerritoryAdapter extends ArrayAdapter<Territory>{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Territory item = (Territory)getItem(position);
-		if (null == convertView) convertView = mLayoutInflater.inflate(R.layout.territory_list_item, null);  	
-		
+		if (null == convertView) convertView = mLayoutInflater.inflate(R.layout.territory_list_item, null);
+
+        ImageView iv = (ImageView) convertView.findViewById(R.id.iv_territory);
+        ImageLoader loader = ImageLoader.getInstance();
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+        loader.displayImage("http://placekitten.com/120/120", iv, options); // TODO
+
 		TextView tv1 = (TextView)convertView.findViewById(R.id.tv_name);
 		tv1.setText("territory_" + item.getId());
 		
