@@ -58,8 +58,9 @@ public class API {
 		post("locations/create", params, handler);
 	}
 
-	public static void getUserInfo(int userId, AsyncHttpResponseHandler handler) {
+	public static void getUserInfo(String token, int userId, AsyncHttpResponseHandler handler) {
 		RequestParams params = new RequestParams();
+        params.put("token", token);
 		params.put("user_id", Integer.toString(userId));
 		get("users/show", params, handler);
 	}

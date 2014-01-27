@@ -57,6 +57,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -72,7 +73,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 
-public class SetTerritoryActivity extends FragmentActivity implements OnGoogleMapFragmentListener, OnCharacterListFragmentItemClickListener {
+public class SetTerritoryActivity extends ActionBarActivity implements OnGoogleMapFragmentListener, OnCharacterListFragmentItemClickListener {
 	private GoogleMap gMap;
 	private TerritoryMarker mTerritoryMarker;
 	private Circle mDistance;
@@ -124,7 +125,7 @@ public class SetTerritoryActivity extends FragmentActivity implements OnGoogleMa
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_territory);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		FragmentManager manager = getSupportFragmentManager();
 		FragmentTransaction tran = manager.beginTransaction();

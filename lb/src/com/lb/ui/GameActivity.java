@@ -49,8 +49,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
+import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -74,6 +73,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,7 +86,7 @@ import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
-public class GameActivity extends FragmentActivity implements ILocationUpdateServiceClient, OnGoogleMapFragmentListener, OnTerritoryDetailFragmentListener, OnNotificationListFragmentItemClickListener {
+public class GameActivity extends ActionBarActivity implements ILocationUpdateServiceClient, OnGoogleMapFragmentListener, OnTerritoryDetailFragmentListener, OnNotificationListFragmentItemClickListener {
 
 	private static Intent serviceIntent;
 	private LocationUpdateService updateService;
@@ -155,7 +155,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 	}
 
     private void configureActionBar() {
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -179,7 +179,7 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
         mGameDropdownAdapter.add(item);
         mGameDropdownAdapter.add(item2);
         mGameDropdownAdapter.add(item3);
-        actionBar.setListNavigationCallbacks(mGameDropdownAdapter, new OnNavigationListener() {
+        actionBar.setListNavigationCallbacks(mGameDropdownAdapter, new ActionBar.OnNavigationListener() {
 
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
@@ -188,12 +188,12 @@ public class GameActivity extends FragmentActivity implements ILocationUpdateSer
 					case 1:
 						intent.setClass(getActivity(), LocationHistoryActivity.class);
 						startActivity(intent);
-						getActionBar().setSelectedNavigationItem(0);
+						getSupportActionBar().setSelectedNavigationItem(0);
 						break;
 					case 2:
 						intent.setClass(getActivity(), SetAvatarActivity.class);
 						startActivity(intent);
-						getActionBar().setSelectedNavigationItem(0);
+						getSupportActionBar().setSelectedNavigationItem(0);
 						break;
 				}
 				return true;

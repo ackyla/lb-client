@@ -146,7 +146,7 @@ public class TitleActivity extends Activity {
 	}
 	
 	private void startGame(final Auth auth) {
-		API.getUserInfo(auth.getUser_id(), new JsonHttpResponseHandler() {
+		API.getUserInfo(auth.getToken(), auth.getUser_id(), new JsonHttpResponseHandler() {
 			
 			@Override
 			public void onStart() {
