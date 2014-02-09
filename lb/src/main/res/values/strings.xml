@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">lb</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="status_territory_radius">半径</string>
+    <string name="status_territory_precision">精度</string>
+    <string name="status_territory_detection_count">発見数</string>
+    <string name="status_territory_expiration_date">期限</string>
+    <string name="action_settings">設定</string>
+    <string name="action_refresh">更新</string>
+    <string name="action_calendar">日付選択</string>
+    <string name="action_add">追加</string>
+    <string name="action_set">設置する</string>
+    <string name="action_select">選択する</string>
+    <string name="change_avatar">アバターを変更する</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section_map">マップ</string>
+    <string name="title_section_territory_list">テリトリー</string>
+    <string name="title_section_notification_list">通知</string>
+    <string name="title_activity_character"></string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_territory_detail">TerritoryDetailActivity</string>
+    <string name="select_character">テリトリーを選んで下さい</string>
+    <string name="cancel">キャンセル</string>
+    <string name="clear">クリア</string>
+    <string name="apply">決定</string>
+
+</resources>

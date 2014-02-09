@@ -1,52 +1,34 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.0'
-    }
-}
-
 apply plugin: 'android'
-apply plugin: 'android-apt'
 
 android {
-    buildToolsVersion "17.0"
-    compileSdkVersion 18
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 18
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 
     sourceSets {
         main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src', 'src-gen']
-            resources.srcDirs = ['src']
-            res.srcDirs = ['res']
+            java.srcDirs = ['src/main/java', 'src-gen/main/java']
         }
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
-ext.jppVersion = '1.6';
-
-configurations {
-    apt
-}
-
 dependencies {
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
-    compile 'de.greenrobot:greendao:1.3.6'
-    compile 'com.loopj.android:android-async-http:1.4.3'
+    compile 'de.greenrobot:greendao:1.3.+'
     compile 'com.android.support:support-v4:19.+'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.android.gms:play-services:3.+'
-    compile "net.vvakame:jsonpullparser-core:${jppVersion}"
-    apt "net.vvakame:jsonpullparser-apt:${jppVersion}"
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.+'
+    compile 'com.squareup.picasso:picasso:2.1.+'
+    compile 'com.squareup.retrofit:retrofit:1.3.+'
 }

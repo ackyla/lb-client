@@ -3,15 +3,15 @@ import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Schema;
 
 // DBのバージョン
-def dbVersion = 4
+def dbVersion = 5
 // 出力先のパッケージ名
 def daoOutputPackage = "com.lb"
 // 出力先のディレクトリパス（generator実行前にcleanするのでソースは分けたほうがいい）
-def daoOutputDirPath = "android/src-gen"
+def daoOutputDirPath = "lb/src-gen/main/java"
 
 // generatorで作成したディレクトリを削除する
 task daoGeneratorClean(type: Delete) {
-    delete "../${daoOutputDirPath}"
+    delete "${projectDir.getParent()}/"+daoOutputDirPath
 }
 
 task daoGenerator {
@@ -24,20 +24,22 @@ task daoGenerator {
 
         Entity auth = schema.addEntity("Auth");
 
-				auth.addIdProperty().autoincrement();
-				auth.addIntProperty("user_id").notNull();
-				auth.addStringProperty("token");
+        auth.addIdProperty().autoincrement();
+        auth.addIntProperty("user_id").notNull();
+        auth.addStringProperty("token");
+        auth.addStringProperty("name");
+        auth.addStringProperty("url");
 
         // ------------- この辺でテーブル定義 END -------------------
 
         try {
             // 未作成ならディレクトリを作る
-            File file = new File(daoOutputDirPath);
+            File file = new File("${projectDir.getParent()}/"+daoOutputDirPath);
             if (!file.exists()) {
                 file.mkdirs();
             }
             // Dao生成!
-            new DaoGenerator().generateAll(schema, daoOutputDirPath);
+            new DaoGenerator().generateAll(schema, "${projectDir.getParent()}/"+daoOutputDirPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
