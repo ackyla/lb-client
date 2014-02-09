@@ -23,6 +23,7 @@ public class Territory implements Serializable {
     private Date expirationDate;
     private Date createdAt;
     private Date updatedAt;
+    private User owner;
     private Character character;
     private Coordinate coordinate;
 
@@ -84,6 +85,14 @@ public class Territory implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public Character getCharacter() {
