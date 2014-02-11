@@ -1,6 +1,12 @@
 package com.lb.api;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.lb.core.character.DistanceMarker;
+import com.lb.core.territory.TerritoryMarker;
+
 import java.io.Serializable;
+import java.util.Calendar;
 
 /**
  * Created by ackyla on 1/29/14.
@@ -62,5 +68,21 @@ public class Character implements Serializable {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public TerritoryMarker getTerritoryMarker(LatLng latLng) {
+        TerritoryMarker marker = new TerritoryMarker(latLng);
+        marker.setRadius(radius);
+
+        marker.setColor(0, 255, 0);
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+        return marker;
+    }
+
+    public DistanceMarker getDistanceMarker(LatLng latLng) {
+        DistanceMarker marker = new DistanceMarker(latLng);
+        marker.setRadius(distance);
+        return marker;
     }
 }

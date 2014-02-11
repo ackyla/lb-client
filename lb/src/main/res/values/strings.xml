@@ -33,5 +33,16 @@
     <string name="divider_colon">: </string>
     <string name="divider_slash">/</string>
     <string name="empty">ありません</string>
+    <string name="message_set_territory">テリトリーを設置しました</string>
+    <string name="title_activity_set_territory">テリトリー作成</string>
+    <string name="message_out_of_distance">設置範囲外です</string>
+    <string name="message_failure_set_territory">テリトリーを設置できませんでした</string>
+    <string name="status_character_cost">消費陣力</string>
+    <string name="right_arrow">→</string>
+    <string name="after_set">設置後陣力</string>
+    <string name="dialog_title_set_territory">テリトリーを設置します</string>
+    <string name="message_network_error">通信エラーが発生しました</string>
+    <string name="message_insufficient_point">陣力が足りません</string>
+    
 
 </resources>

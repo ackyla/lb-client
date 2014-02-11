@@ -17,6 +17,10 @@ import android.graphics.Color;
 import android.text.format.DateUtils;
 import android.view.WindowManager.BadTokenException;
 
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GlobalPosition;
+
 public class Utils {
 
     public static PolylineOptions createUserHistoryPolylineOptions() {
@@ -88,5 +92,17 @@ public class Utils {
      */
     public static LatLng getDefaultLatLng() {
         return new LatLng(35.360549, 138.727786);
+    }
+
+    public static double getDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
+        GeodeticCalculator calc = new GeodeticCalculator();
+        Ellipsoid ellipsoid = Ellipsoid.WGS84;
+        GlobalPosition pos1 = new GlobalPosition(latitude1, longitude1, 0.0);
+        GlobalPosition pos2 = new GlobalPosition(latitude2, longitude2, 0.0);
+        return calc.calculateGeodeticCurve(ellipsoid, pos1, pos2).getEllipsoidalDistance();
+    }
+
+    public static double getDistance(LatLng latLng1, LatLng latLng2) {
+        return getDistance(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude);
     }
 }

@@ -26,6 +26,8 @@ import com.lb.ui.user.MapFragment;
 import com.squareup.picasso.Picasso;
 
 import static android.app.AlertDialog.BUTTON_POSITIVE;
+import static com.lb.Intents.EXTRA_USER;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -41,24 +43,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.gavaghan.geodesy.Ellipsoid;
+import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GlobalPosition;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class SetTerritoryActivity extends ActionBarActivity implements MapFragment.OnGoogleMapFragmentListener, CharacterDialogFragment.OnItemClickListener, DialogInterface.OnClickListener {
 
+    private User user;
     private GoogleMap gMap;
     private LocationClient locationClient;
     private DistanceMarker distanceMarker;
     private TerritoryMarker territoryMarker;
+    private LatLng currentLocation;
 
     private Character character;
     private View characterView;
     private ImageView ivAvatar;
     private TextView tvName;
 
-    public static Intent createIntent() {
-        return new Intents.Builder("set.territory.VIEW").toIntent();
+    public static Intent createIntent(User user) {
+        return new Intents.Builder("set.territory.VIEW").user(user).toIntent();
     }
 
     @Override
@@ -66,8 +74,11 @@ public class SetTerritoryActivity extends ActionBarActivity implements MapFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_territory);
 
+        user = (User) getIntent().getExtras().getSerializable(EXTRA_USER);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.title_activity_set_territory);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -100,11 +111,11 @@ public class SetTerritoryActivity extends ActionBarActivity implements MapFragme
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_set:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setNegativeButton(R.string.cancel, null)
-                        .setPositiveButton(R.string.apply, this)
-                        .setTitle("ここにテリトリーを設置しますか？")
-                        .create().show();
+                if (Utils.getDistance(territoryMarker.getCenter(), distanceMarker.getCenter()) > distanceMarker.getRadius()) {
+                    Toast.makeText(this, R.string.message_out_of_distance, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                showSetDialog();
                 return true;
             case android.R.id.home:
                 finish();
@@ -132,8 +143,7 @@ public class SetTerritoryActivity extends ActionBarActivity implements MapFragme
                     if (location != null)
                         latlng = new LatLng(location.getLatitude(), location.getLongitude());
                     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-                    distanceMarker = new DistanceMarker(latlng);
-                    distanceMarker.addTo(gMap).hide();
+                    currentLocation = latlng;
                     v.setVisibility(View.VISIBLE);
                     locationClient.disconnect();
                 }
@@ -149,15 +159,11 @@ public class SetTerritoryActivity extends ActionBarActivity implements MapFragme
             });
             locationClient.connect();
 
-            territoryMarker = new TerritoryMarker(Utils.getDefaultLatLng());
-            territoryMarker.addTo(gMap);
-            territoryMarker.hide();
-
             gMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    territoryMarker.updateCenter(cameraPosition.target);
-                }
+                    if (territoryMarker != null) territoryMarker.updateCenter(cameraPosition.target);
+                 }
             });
 
             v.setVisibility(View.VISIBLE);
@@ -177,32 +183,82 @@ public class SetTerritoryActivity extends ActionBarActivity implements MapFragme
         tvName.setText(character.getName());
         Picasso.with(this).load("http://placekitten.com/48/48").into(ivAvatar);
         characterView.setVisibility(View.VISIBLE);
-        distanceMarker.updateRadius(character.getDistance());
-        distanceMarker.show();
-        territoryMarker.updateRadius(character.getRadius());
-        territoryMarker.show();
-        dialog.dismiss();
+
+        if (gMap != null) {
+            gMap.clear();
+            distanceMarker = character.getDistanceMarker(currentLocation);
+            distanceMarker.addTo(gMap);
+            territoryMarker = character.getTerritoryMarker(currentLocation);
+            territoryMarker.addTo(gMap);
+            dialog.dismiss();
+        }
     }
 
     @Override
     public void onClick(final DialogInterface dialog, int which) {
         if (which == BUTTON_POSITIVE) {
+            final ProgressDialog progress = Utils.createProgressDialog(this);
+
             LbClient client = new LbClient();
             client.setToken(Session.getToken());
             client.createTerritory(territoryMarker.getCenter(), character.getId(), new Callback<Territory>() {
                 @Override
                 public void success(Territory territory, Response response) {
-                    Toast.makeText(SetTerritoryActivity.this, "テリトリーを設置しました", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SetTerritoryActivity.this, R.string.message_set_territory, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
+                    progress.dismiss();
                     finish(territory);
                 }
 
                 @Override
                 public void failure(RetrofitError retrofitError) {
-
+                    Toast.makeText(SetTerritoryActivity.this, R.string.message_failure_set_territory, Toast.LENGTH_SHORT).show();
+                    progress.dismiss();
                 }
             });
         }
+    }
+
+    private void showSetDialog() {
+        final ProgressDialog progress = Utils.createProgressDialog(this);
+        LbClient client = new LbClient();
+        client.setToken(Session.getToken());
+        client.getUser(new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                progress.dismiss();
+                View v = getLayoutInflater().inflate(R.layout.dialog_set_territory_view, null);
+                TextView tvCost = (TextView) v.findViewById(R.id.tv_cost);
+                TextView tvGpsPointFrom = (TextView) v.findViewById(R.id.tv_gps_point_from);
+                TextView tvGpsPointTo = (TextView) v.findViewById(R.id.tv_gps_point_to);
+                TextView tvMessageInsufficientGpsPoint = (TextView) v.findViewById(R.id.tv_message_insufficient_point);
+                tvCost.setText(Integer.toString(character.getCost()));
+                tvGpsPointFrom.setText(Integer.toString(user.getGpsPoint()));
+                tvGpsPointTo.setText(Integer.toString(user.getGpsPoint()-character.getCost()));
+                AlertDialog.Builder builder = new AlertDialog.Builder(SetTerritoryActivity.this);
+
+                if (user.getGpsPoint() - character.getCost() < 0) {
+                    tvGpsPointTo.setTextColor(getResources().getColor(R.color.dangerColor));
+                    tvMessageInsufficientGpsPoint.setVisibility(View.VISIBLE);
+                    builder.setNegativeButton(R.string.cancel, null)
+                            .setTitle(R.string.dialog_title_set_territory)
+                            .setView(v)
+                            .create().show();
+                } else {
+                    builder.setNegativeButton(R.string.cancel, null)
+                            .setPositiveButton(R.string.apply, SetTerritoryActivity.this)
+                            .setTitle(R.string.dialog_title_set_territory)
+                            .setView(v)
+                            .create().show();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                progress.dismiss();
+                Toast.makeText(SetTerritoryActivity.this, R.string.message_network_error, Toast.LENGTH_SHORT);
+            }
+        });
     }
 
 /*

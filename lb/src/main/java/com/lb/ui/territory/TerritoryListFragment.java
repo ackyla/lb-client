@@ -2,8 +2,10 @@ package com.lb.ui.territory;
 
 import java.util.ArrayList;
 
+import static com.lb.Intents.EXTRA_USER;
 import static com.lb.RequestCodes.SET_TERRITORY;
 import com.lb.R;
+import com.lb.api.User;
 import com.lb.api.client.LbClient;
 import com.lb.core.territory.TerritoryPager;
 import com.lb.api.Territory;
@@ -66,7 +68,8 @@ public class TerritoryListFragment extends ListFragment implements AbsListView.O
                 refresh();
                 return true;
             case R.id.action_add:
-                startActivityForResult(SetTerritoryActivity.createIntent(), SET_TERRITORY);
+                User user = (User) getActivity().getIntent().getExtras().getSerializable(EXTRA_USER);
+                startActivityForResult(SetTerritoryActivity.createIntent(user), SET_TERRITORY);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

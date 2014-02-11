@@ -17,10 +17,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.lb.R;
 import com.lb.api.Character;
+import com.lb.api.User;
 import com.lb.api.client.LbClient;
 import com.lb.core.character.CharacterPager;
 import com.lb.model.Session;
@@ -91,14 +93,16 @@ public class CharacterDialogFragment extends DialogFragment {
             transaction.remove(current);
         transaction.addToBackStack(null);
 
+        Bundle args = new Bundle();
         CharacterDialogFragment fragment = new CharacterDialogFragment();
+        fragment.setArguments(args);
+        fragment.setCancelable(false);
         fragment.show(manager, TAG);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         builder.setTitle(R.string.select_character)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -109,7 +113,9 @@ public class CharacterDialogFragment extends DialogFragment {
 
         final AlertDialog dialog = builder.create();
 
-        ListView view = (ListView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_view, null);
+        View v = getActivity().getLayoutInflater().inflate(R.layout.list_dialog_view, null);
+        final ListView listView = (ListView) v.findViewById(R.id.lv_dialog);
+        final ProgressBar pbLoading = (ProgressBar) v.findViewById(R.id.pb_loading);
 
         final CharacterListAdapter adapter = new CharacterListAdapter(getActivity(), 0, new ArrayList<Character>());
 
@@ -119,6 +125,8 @@ public class CharacterDialogFragment extends DialogFragment {
             @Override
             public void success(CharacterPager pager, Response response) {
                 for (Character c : pager.getObjects()) adapter.add(c);
+                listView.setVisibility(View.VISIBLE);
+                pbLoading.setVisibility(View.GONE);
             }
 
             @Override
@@ -127,15 +135,15 @@ public class CharacterDialogFragment extends DialogFragment {
             }
         });
 
-        view.setAdapter(adapter);
-        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 OnItemClickListener listener = (OnItemClickListener) getActivity();
                 listener.onItemClick(dialog, adapter.getItem(position));
             }
         });
-        dialog.setView(view);
+        dialog.setView(v);
         return dialog;
     }
 }
