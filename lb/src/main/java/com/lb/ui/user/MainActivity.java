@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import static com.lb.Intents.EXTRA_USER;
@@ -38,6 +40,8 @@ import com.lb.ui.PreferenceScreenActivity;
 import com.lb.ui.notification.NotificationListFragment;
 import com.lb.ui.territory.TerritoryListFragment;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -89,6 +93,8 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.custom_view_gps_point);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -259,10 +265,16 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
     private void showUserInfo() {
         ActionBar bar = getSupportActionBar();
         ImageView ivAvatar = (ImageView) findViewById(android.R.id.home);
+        View customView = bar.getCustomView();
+        ProgressBar pBar = (ProgressBar) customView.findViewById(R.id.pb_gps_point);
+        TextView tvGpsPoint = (TextView) customView.findViewById(R.id.tv_gps_point);
 
         Picasso.with(this).load(user.getAvatar()).into(ivAvatar);
         bar.setTitle(user.getName());
         bar.setSubtitle(getString(R.string.status_user_level)+" "+user.getLevel());
+        pBar.setMax(user.getGpsPointLimit());
+        pBar.setProgress(user.getGpsPoint());
+        tvGpsPoint.setText(user.getGpsPoint()+"/"+user.getGpsPointLimit());
     }
 
     private void refreshUserInfo() {
