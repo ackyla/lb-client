@@ -59,6 +59,10 @@ public class TerritoryInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         territories.put(markerId, territory);
     }
 
+    public Territory getTerritory(String markerId) {
+        return territories.get(markerId);
+    }
+
     public void clear() {
         territories = new HashMap<String, Territory>();
     }

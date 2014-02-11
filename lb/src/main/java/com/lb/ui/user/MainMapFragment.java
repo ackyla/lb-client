@@ -10,19 +10,21 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.lb.api.Coordinate;
 import com.lb.api.Territory;
 import com.lb.api.client.LbClient;
 import com.lb.core.territory.TerritoryMarker;
 import com.lb.core.territory.TerritoryPager;
 import com.lb.model.Session;
+import com.lb.ui.territory.TerritoryDetailActivity;
 import com.lb.ui.territory.TerritoryInfoWindowAdapter;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainMapFragment extends MapFragment {
+public class MainMapFragment extends MapFragment implements GoogleMap.OnInfoWindowClickListener {
 
     private TerritoryInfoWindowAdapter adapter;
     private GoogleMap gMap;
@@ -42,6 +44,7 @@ public class MainMapFragment extends MapFragment {
         View v = super.onCreateView(inflater, container, savedInstanceState);
         gMap = getMap();
         gMap.setInfoWindowAdapter(adapter);
+        gMap.setOnInfoWindowClickListener(this);
         refresh();
         return v;
     }
@@ -66,5 +69,11 @@ public class MainMapFragment extends MapFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Territory territory = adapter.getTerritory(marker.getId());
+        startActivity(TerritoryDetailActivity.createIntent(territory));
     }
 }
