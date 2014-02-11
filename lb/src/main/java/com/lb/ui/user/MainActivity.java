@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -191,7 +192,7 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
 
     @Override
     public void onLocationUpdate(Location location) {
-
+        refreshUserInfo(location.getUser());
     }
 
     @Override
@@ -275,6 +276,11 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
         pBar.setMax(user.getGpsPointLimit());
         pBar.setProgress(user.getGpsPoint());
         tvGpsPoint.setText(user.getGpsPoint()+"/"+user.getGpsPointLimit());
+    }
+
+    private void refreshUserInfo(User user) {
+        this.user = user;
+        showUserInfo();
     }
 
     private void refreshUserInfo() {
