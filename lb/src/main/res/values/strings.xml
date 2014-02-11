@@ -29,5 +29,6 @@
     <string name="apply">決定</string>
     <string name="status_user_level">レベル</string>
     <string name="status_point">陣力</string>
+    <string name="expired">期限切れ</string>
 
 </resources>

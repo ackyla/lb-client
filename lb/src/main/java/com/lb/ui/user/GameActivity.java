@@ -385,8 +385,8 @@ public class GameActivity extends ActionBarActivity implements ILocationUpdateSe
             TextView title = (TextView) v.findViewById(R.id.title);
             title.setText(marker.getTitle());
 
-            TextView snippet = (TextView) v.findViewById(R.id.snippet);
-            snippet.setText(marker.getSnippet());
+            //TextView snippet = (TextView) v.findViewById(R.id.snippet);
+            //snippet.setText(marker.getSnippet());
         }
     }
 

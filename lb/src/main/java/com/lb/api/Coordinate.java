@@ -1,6 +1,7 @@
 package com.lb.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
@@ -30,5 +31,9 @@ public class Coordinate implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
     }
 }

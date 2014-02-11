@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.lb.core.territory.TerritoryMarker;
+import com.lb.model.Utils;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -112,7 +113,7 @@ public class Territory implements Serializable {
     }
 
     public TerritoryMarker getMarker() {
-        TerritoryMarker marker = new TerritoryMarker(new LatLng(coordinate.getLatitude(), coordinate.getLongitude()));
+        TerritoryMarker marker = new TerritoryMarker(coordinate.getLatLng());
         marker.setRadius(radius);
 
         if (Calendar.getInstance().getTime().compareTo(expirationDate) < 0) {
@@ -124,5 +125,13 @@ public class Territory implements Serializable {
         }
 
         return marker;
+    }
+
+    public boolean isExpired() {
+        return Calendar.getInstance().getTime().compareTo(expirationDate) >= 0;
+    }
+
+    public String getRelativeTimeSpanString() {
+        return Utils.getRelativeTimeSpanString(expirationDate);
     }
 }
