@@ -1,58 +1,61 @@
 package com.lb.ui.territory;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
 
 import static com.lb.Intents.EXTRA_TERRITORY;
+
+import com.google.android.gms.maps.model.LatLng;
 import com.lb.Intents;
 import com.lb.R;
-import com.lb.api.Territory;
-import com.lb.api.User;
+import com.lb.api.*;
+import com.lb.api.Character;
+import com.lb.api.client.LbClient;
+import com.lb.core.character.DistanceMarker;
+import com.lb.core.territory.TerritoryMarker;
 import com.lb.model.Session;
 import com.lb.model.Utils;
-import com.lb.core.territory.TerritoryMarker;
+import com.lb.ui.character.CharacterDialogFragment;
 import com.lb.ui.user.MapFragment;
-import com.lb.ui.user.MapFragment.OnGoogleMapFragmentListener;
+import com.squareup.picasso.Picasso;
 
+import static android.app.AlertDialog.BUTTON_POSITIVE;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.location.Location;
+import android.location.*;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class SetTerritoryActivity extends ActionBarActivity {
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class SetTerritoryActivity extends ActionBarActivity implements MapFragment.OnGoogleMapFragmentListener, CharacterDialogFragment.OnItemClickListener, DialogInterface.OnClickListener {
+
     private GoogleMap gMap;
-    private TerritoryMarker mTerritoryMarker;
-    private Circle mDistance;
-    private ProgressDialog mProgressDialog;
-    private AlertDialog mSelectDialog;
-    private Character mCharacter;
-    private LocationClient mLocationClient;
+    private LocationClient locationClient;
+    private DistanceMarker distanceMarker;
+    private TerritoryMarker territoryMarker;
+
+    private Character character;
+    private View characterView;
+    private ImageView ivAvatar;
+    private TextView tvName;
 
     public static Intent createIntent() {
         return new Intents.Builder("set.territory.VIEW").toIntent();
@@ -68,19 +71,41 @@ public class SetTerritoryActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new SetTerritoryMapFragment())
+                    .add(R.id.container, new MapFragment())
                     .commit();
         }
+
+        characterView = findViewById(R.id.ll_character);
+        ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
+        tvName = (TextView) findViewById(R.id.tv_name);
+
+        characterView.setVisibility(View.GONE);
+        characterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharacterDialogFragment.show(SetTerritoryActivity.this);
+            }
+        });
+
+        CharacterDialogFragment.show(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.territory_set, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_set:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.apply, this)
+                        .setTitle("ここにテリトリーを設置しますか？")
+                        .create().show();
+                return true;
             case android.R.id.home:
                 finish();
                 return true;
@@ -89,11 +114,95 @@ public class SetTerritoryActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap map, final View v) {
+        gMap = map;
+
+        if (gMap != null) {
+            v.setVisibility(View.INVISIBLE);
+            gMap.setMyLocationEnabled(true);
+            UiSettings settings = gMap.getUiSettings();
+            settings.setMyLocationButtonEnabled(true);
+
+            locationClient = new LocationClient(this, new GooglePlayServicesClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    android.location.Location location = locationClient.getLastLocation();
+                    LatLng latlng = Utils.getDefaultLatLng();
+                    if (location != null)
+                        latlng = new LatLng(location.getLatitude(), location.getLongitude());
+                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
+                    distanceMarker = new DistanceMarker(latlng);
+                    distanceMarker.addTo(gMap).hide();
+                    v.setVisibility(View.VISIBLE);
+                    locationClient.disconnect();
+                }
+
+                @Override
+                public void onDisconnected() {
+                }
+            }, new GooglePlayServicesClient.OnConnectionFailedListener() {
+                @Override
+                public void onConnectionFailed(ConnectionResult result) {
+                    v.setVisibility(View.VISIBLE);
+                }
+            });
+            locationClient.connect();
+
+            territoryMarker = new TerritoryMarker(Utils.getDefaultLatLng());
+            territoryMarker.addTo(gMap);
+            territoryMarker.hide();
+
+            gMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    territoryMarker.updateCenter(cameraPosition.target);
+                }
+            });
+
+            v.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void finish(Territory territory) {
         Intent data = new Intent();
         data.putExtra(EXTRA_TERRITORY, territory);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @Override
+    public void onItemClick(AlertDialog dialog, Character character) {
+        this.character = character;
+        tvName.setText(character.getName());
+        Picasso.with(this).load("http://placekitten.com/48/48").into(ivAvatar);
+        characterView.setVisibility(View.VISIBLE);
+        distanceMarker.updateRadius(character.getDistance());
+        distanceMarker.show();
+        territoryMarker.updateRadius(character.getRadius());
+        territoryMarker.show();
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onClick(final DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE) {
+            LbClient client = new LbClient();
+            client.setToken(Session.getToken());
+            client.createTerritory(territoryMarker.getCenter(), character.getId(), new Callback<Territory>() {
+                @Override
+                public void success(Territory territory, Response response) {
+                    Toast.makeText(SetTerritoryActivity.this, "テリトリーを設置しました", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    finish(territory);
+                }
+
+                @Override
+                public void failure(RetrofitError retrofitError) {
+
+                }
+            });
+        }
     }
 
 /*

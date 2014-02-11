@@ -8,8 +8,9 @@ import com.lb.api.client.LbClient;
 import com.lb.core.territory.TerritoryPager;
 import com.lb.api.Territory;
 import com.lb.model.Session;
-import com.lb.ui.character.CharacterActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.Menu;
@@ -92,5 +93,16 @@ public class TerritoryListFragment extends ListFragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (Activity.RESULT_OK != resultCode || data == null) return;
+
+        switch (requestCode) {
+            case SET_TERRITORY:
+                refresh();
+                return;
+        }
+    }
 }
 

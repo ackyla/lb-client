@@ -83,7 +83,7 @@ public class CharacterDialogFragment extends DialogFragment {
         }
     }
 
-    public static void show(FragmentActivity activity, Fragment targetFragment) {
+    public static void show(FragmentActivity activity) {
         FragmentManager manager = activity.getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         Fragment current = manager.findFragmentByTag(TAG);
@@ -92,7 +92,6 @@ public class CharacterDialogFragment extends DialogFragment {
         transaction.addToBackStack(null);
 
         CharacterDialogFragment fragment = new CharacterDialogFragment();
-        fragment.setTargetFragment(targetFragment, 0);
         fragment.show(manager, TAG);
     }
 
@@ -132,7 +131,7 @@ public class CharacterDialogFragment extends DialogFragment {
         view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OnItemClickListener listener = (OnItemClickListener) getTargetFragment();
+                OnItemClickListener listener = (OnItemClickListener) getActivity();
                 listener.onItemClick(dialog, adapter.getItem(position));
             }
         });

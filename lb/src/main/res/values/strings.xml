@@ -13,6 +13,8 @@
     <string name="action_add">追加</string>
     <string name="action_set">設置する</string>
     <string name="action_select">選択する</string>
+    <string name="action_supply">回復する</string>
+    <string name="action_move">移動する</string>
     <string name="change_avatar">アバターを変更する</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_section_map">マップ</string>
