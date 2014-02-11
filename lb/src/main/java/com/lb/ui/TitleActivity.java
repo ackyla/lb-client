@@ -6,6 +6,7 @@ import java.util.List;
 import com.lb.Auth;
 import com.lb.AuthDao;
 import com.lb.DaoSession;
+import com.lb.Intents;
 import com.lb.R;
 import com.lb.api.User;
 import com.lb.api.client.LbClient;

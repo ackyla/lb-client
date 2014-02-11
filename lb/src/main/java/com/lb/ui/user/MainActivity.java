@@ -3,6 +3,7 @@ package com.lb.ui.user;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,18 +22,26 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.GoogleMap;
+import static com.lb.Intents.EXTRA_USER;
 import com.lb.Intents;
 import com.lb.R;
 import com.lb.api.Location;
 import com.lb.api.User;
+import com.lb.api.client.LbClient;
 import com.lb.logic.ILocationUpdateServiceClient;
 import com.lb.logic.LocationUpdateService;
 import com.lb.model.Session;
 import com.lb.ui.PreferenceScreenActivity;
 import com.lb.ui.notification.NotificationListFragment;
 import com.lb.ui.territory.TerritoryListFragment;
+import com.squareup.picasso.Picasso;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity implements ILocationUpdateServiceClient, ActionBar.TabListener, MapFragment.OnGoogleMapFragmentListener {
 
@@ -75,6 +84,8 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        user = (User) getIntent().getExtras().getSerializable(EXTRA_USER);
+
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -109,6 +120,7 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
                             .setTabListener(this));
         }
 
+        showUserInfo();
         startAndBindService();
     }
 
@@ -122,6 +134,7 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
     protected void onResume() {
         super.onResume();
         startAndBindService();
+        refreshUserInfo();
     }
 
     @Override
@@ -241,5 +254,32 @@ public class MainActivity extends ActionBarActivity implements ILocationUpdateSe
             }
             return null;
         }
+    }
+
+    private void showUserInfo() {
+        ActionBar bar = getSupportActionBar();
+        ImageView ivAvatar = (ImageView) findViewById(android.R.id.home);
+
+        Picasso.with(this).load(user.getAvatar()).into(ivAvatar);
+        bar.setTitle(user.getName());
+        bar.setSubtitle(getString(R.string.status_user_level)+" "+user.getLevel());
+    }
+
+    private void refreshUserInfo() {
+        LbClient client = new LbClient();
+        client.setToken(Session.getToken());
+        client.getUser(new Callback<User>() {
+            @Override
+            public void success(User u, Response response) {
+                user = u;
+                showUserInfo();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                stopAndUnBindService();
+                finish();
+            }
+        });
     }
 }

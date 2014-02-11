@@ -27,5 +27,6 @@
     <string name="cancel">キャンセル</string>
     <string name="clear">クリア</string>
     <string name="apply">決定</string>
+    <string name="status_user_level">レベル</string>
 
 </resources>
