@@ -30,5 +30,8 @@
     <string name="status_user_level">レベル</string>
     <string name="status_point">陣力</string>
     <string name="expired">期限切れ</string>
+    <string name="divider_colon">: </string>
+    <string name="divider_slash">/</string>
+    <string name="empty">ありません</string>
 
 </resources>

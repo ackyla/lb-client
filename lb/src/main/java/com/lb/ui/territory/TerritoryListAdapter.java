@@ -1,6 +1,7 @@
 package com.lb.ui.territory;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,25 +35,25 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
             convertView = layoutInflater.inflate(R.layout.territory_list_item, null);
 
         Territory item = (Territory) getItem(position);
+        String expirationDate = item.isExpired() ? context.getString(R.string.expired) : item.getRelativeTimeSpanString();
 
         ImageView iv = (ImageView) convertView.findViewById(R.id.iv_territory);
+        TextView tvName = (TextView) convertView.findViewById(R.id.tv_name);
+        TextView tvRadius = (TextView) convertView.findViewById(R.id.tv_radius);
+        TextView tvPrecision = (TextView) convertView.findViewById(R.id.tv_precision);
+        TextView tvDetectionCount = (TextView) convertView.findViewById(R.id.tv_detection_count);
+        TextView tvExpirationDate = (TextView) convertView.findViewById(R.id.tv_expiration_date);
 
         Picasso.with(context).load("http://placekitten.com/120/120").into(iv); // TODO
-
-        TextView tvName = (TextView) convertView.findViewById(R.id.tv_name);
         tvName.setText(item.getCharacter().getName());
-
-        TextView tvRadius = (TextView) convertView.findViewById(R.id.tv_radius);
         tvRadius.setText(item.getRadius() / 1000 + "km");
-
-        TextView tvPrecision = (TextView) convertView.findViewById(R.id.tv_precision);
         tvPrecision.setText(item.getPrecision() * 100 + "%");
-
-        TextView tvDetectionCount = (TextView) convertView.findViewById(R.id.tv_detection_count);
         tvDetectionCount.setText(Integer.toString(item.getDetectionCount()));
+        tvExpirationDate.setText(expirationDate);
+        Log.i("dump", "pos="+position);
+        if (item.isExpired()) tvExpirationDate.setTextColor(context.getResources().getColor(R.color.dangerColor));
+        else tvExpirationDate.setTextColor(context.getResources().getColor(R.color.infoBlueColor));
 
-        TextView tvExpirationDate = (TextView) convertView.findViewById(R.id.tv_expiration_date);
-        tvExpirationDate.setText(Utils.getRelativeTimeSpanString(item.getExpirationDate()));
 
         return convertView;
     }

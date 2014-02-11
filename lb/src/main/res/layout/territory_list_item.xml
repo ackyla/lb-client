@@ -35,7 +35,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/status_territory_radius" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/divider_colon" />
             <TextView
                 android:id="@+id/tv_radius"
                 android:layout_width="match_parent"
@@ -55,7 +59,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/status_territory_precision" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/divider_colon" />
             <TextView
                 android:id="@+id/tv_precision"
                 android:layout_width="match_parent"
@@ -76,7 +84,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/status_territory_detection_count" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/divider_colon" />
             <TextView
                 android:id="@+id/tv_detection_count"
                 android:layout_width="match_parent"
@@ -97,14 +109,17 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/status_territory_expiration_date" />
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/divider_colon" />
             <TextView
                 android:id="@+id/tv_expiration_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1日後"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:layout_marginLeft="2dp" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </LinearLayout>
 
