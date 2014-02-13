@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,21 +12,17 @@ import android.widget.TextView;
 
 import static com.lb.Intents.EXTRA_TERRITORY;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 import com.lb.Intents;
 import com.lb.R;
 import com.lb.api.Territory;
-import com.lb.ui.user.MapFragment;
+import com.lb.ui.MapFragment;
+import com.lb.ui.user.TerritoryDetailMapFragment;
 import com.squareup.picasso.Picasso;
 
 public class TerritoryDetailActivity extends ActionBarActivity implements MapFragment.OnGoogleMapFragmentListener {
 
     private Territory territory;
-    private GoogleMap gMap;
 
     public static Intent createIntent(Territory territory) {
         return new Intents.Builder("territory.detail.VIEW").territory(territory).toIntent();
@@ -41,13 +36,13 @@ public class TerritoryDetailActivity extends ActionBarActivity implements MapFra
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        territory = (Territory) getIntent().getExtras().getSerializable(EXTRA_TERRITORY);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MapFragment())
+                    .add(R.id.container, TerritoryDetailMapFragment.newInstance(territory))
                     .commit();
         }
-
-        territory = (Territory) getIntent().getExtras().getSerializable(EXTRA_TERRITORY);
 
         ImageView ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
         TextView tvName = (TextView) findViewById(R.id.tv_name);
@@ -80,23 +75,6 @@ public class TerritoryDetailActivity extends ActionBarActivity implements MapFra
 
     @Override
     public void onMapReady(GoogleMap map, View v) {
-        gMap = map;
-        if (gMap != null) {
-            v.setVisibility(View.INVISIBLE);
-            gMap.setMyLocationEnabled(true);
-            UiSettings settings = gMap.getUiSettings();
-            settings.setMyLocationButtonEnabled(true);
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(territory.getCoordinate().getLatitude(), territory.getCoordinate().getLongitude()), 15));
 
-            gMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                @Override
-                public void onCameraChange(CameraPosition cameraPosition) {
-                    Log.i("dump", "zoom=" + cameraPosition.zoom);
-                }
-            });
-
-            v.setVisibility(View.VISIBLE);
-            territory.getMarker().addTo(gMap);
-        }
     }
 }

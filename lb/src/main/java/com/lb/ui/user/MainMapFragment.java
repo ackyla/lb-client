@@ -1,22 +1,18 @@
 package com.lb.ui.user;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.lb.api.Coordinate;
 import com.lb.api.Territory;
 import com.lb.api.client.LbClient;
 import com.lb.core.territory.TerritoryMarker;
 import com.lb.core.territory.TerritoryPager;
 import com.lb.model.Session;
+import com.lb.ui.MapFragment;
 import com.lb.ui.territory.TerritoryDetailActivity;
 import com.lb.ui.territory.TerritoryInfoWindowAdapter;
 
@@ -42,6 +38,7 @@ public class MainMapFragment extends MapFragment implements GoogleMap.OnInfoWind
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
+        initMap();
         gMap = getMap();
         gMap.setInfoWindowAdapter(adapter);
         gMap.setOnInfoWindowClickListener(this);

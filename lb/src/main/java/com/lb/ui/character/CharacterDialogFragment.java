@@ -85,8 +85,8 @@ public class CharacterDialogFragment extends DialogFragment {
         }
     }
 
-    public static void show(FragmentActivity activity) {
-        FragmentManager manager = activity.getSupportFragmentManager();
+    public static void show(Fragment targetFragment) {
+        FragmentManager manager = targetFragment.getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         Fragment current = manager.findFragmentByTag(TAG);
         if (current != null)
@@ -95,6 +95,7 @@ public class CharacterDialogFragment extends DialogFragment {
 
         Bundle args = new Bundle();
         CharacterDialogFragment fragment = new CharacterDialogFragment();
+        fragment.setTargetFragment(targetFragment, 0);
         fragment.setArguments(args);
         fragment.setCancelable(false);
         fragment.show(manager, TAG);
@@ -139,7 +140,7 @@ public class CharacterDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OnItemClickListener listener = (OnItemClickListener) getActivity();
+                OnItemClickListener listener = (OnItemClickListener) getTargetFragment();
                 listener.onItemClick(dialog, adapter.getItem(position));
             }
         });

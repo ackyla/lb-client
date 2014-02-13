@@ -3,7 +3,6 @@ package com.lb.ui.user;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,12 +35,11 @@ import com.lb.api.client.LbClient;
 import com.lb.logic.ILocationUpdateServiceClient;
 import com.lb.logic.LocationUpdateService;
 import com.lb.model.Session;
+import com.lb.ui.MapFragment;
 import com.lb.ui.PreferenceScreenActivity;
 import com.lb.ui.notification.NotificationListFragment;
 import com.lb.ui.territory.TerritoryListFragment;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
