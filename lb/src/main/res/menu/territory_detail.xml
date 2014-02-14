@@ -14,4 +14,12 @@
         android:title="@string/action_move"
         android:orderInCategory="2"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_set"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_set"
+        android:icon="@android:drawable/ic_menu_save"
+        android:visible="false"/>
 </menu>

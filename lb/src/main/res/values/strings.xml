@@ -46,6 +46,10 @@
     <string name="message_insufficient_point">陣力が足りません</string>
     <string name="dialog_title_supply">テリトリーを回復します</string>
     <string name="message_supply">回復しました</string>
+    <string name="message_begin_move">テリトリーを移動して下さい</string>
+    <string name="message_cant_move">期限が切れたテリトリーは移動できません</string>
+    <string name="dialog_title_move">テリトリーを移動します</string>
+    <string name="message_move">テリトリーを移動しました</string>
     
 
 </resources>

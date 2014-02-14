@@ -17,10 +17,13 @@ import android.widget.Toast;
 
 import static com.lb.api.client.ILbConstants.MINUTES_PER_POINT;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.lb.R;
-import com.lb.api.Territory;
-import com.lb.api.User;
+import com.lb.api.*;
 import com.lb.api.client.LbClient;
+import com.lb.core.character.DistanceMarker;
+import com.lb.core.territory.TerritoryMarker;
 import com.lb.model.Session;
 import com.lb.model.Utils;
 import com.lb.ui.MapFragment;
@@ -38,6 +41,9 @@ public class TerritoryDetailMapFragment extends MapFragment {
 
     private Territory territory;
     private GoogleMap gMap;
+    private Menu menu;
+    private TerritoryMarker territoryMarker;
+    private DistanceMarker distanceMarker;
     private View territoryView;
     private ImageView ivAvatar;
     private TextView tvName;
@@ -73,6 +79,7 @@ public class TerritoryDetailMapFragment extends MapFragment {
 
         initMap(territory.getCoordinate());
         gMap = getMap();
+
         refresh();
 
         ll.addView(v);
@@ -82,6 +89,7 @@ public class TerritoryDetailMapFragment extends MapFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.territory_detail, menu);
+        this.menu = menu;
     }
 
     @Override
@@ -91,9 +99,102 @@ public class TerritoryDetailMapFragment extends MapFragment {
                 showSupplyDialog();
                 return true;
             case R.id.action_move:
+                move();
+                return true;
+            case R.id.action_set:
+                if (Utils.getDistance(territoryMarker.getCenter(), distanceMarker.getCenter()) > distanceMarker.getRadius()) {
+                    Toast.makeText(getActivity(), R.string.message_out_of_distance, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                showSetDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showSetDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setNegativeButton(R.string.cancel, null)
+                .setNeutralButton(R.string.clear, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        toggleSetMenu();
+                        initMap(territory.getCoordinate());
+                    }
+                })
+                .setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        set();
+                        dialog.dismiss();
+                        toggleSetMenu();
+                    }
+                })
+                .setTitle(R.string.dialog_title_move)
+                .create().show();
+
+    }
+
+    private void toggleSetMenu() {
+        if (menu.findItem(R.id.action_set).isVisible()) {
+            menu.findItem(R.id.action_supply).setVisible(true);
+            menu.findItem(R.id.action_move).setVisible(true);
+            menu.findItem(R.id.action_set).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_supply).setVisible(false);
+            menu.findItem(R.id.action_move).setVisible(false);
+            menu.findItem(R.id.action_set).setVisible(true);
+        }
+    }
+
+    private void set() {
+        final ProgressDialog progress = Utils.createProgressDialog(getActivity());
+        LatLng latLng = territoryMarker.getCenter();
+
+        LbClient client = new LbClient();
+        client.setToken(Session.getToken());
+        client.moveTerritory(territory.getId(), latLng.latitude, latLng.longitude, new Callback<Territory>() {
+            @Override
+            public void success(Territory movedTerritory, Response response) {
+                territory = movedTerritory;
+                Toast.makeText(getActivity(), R.string.message_move, Toast.LENGTH_SHORT).show();
+                progress.dismiss();
+                initMap(territory.getCoordinate());
+                refresh();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getActivity(), R.string.message_network_error, Toast.LENGTH_SHORT).show();
+                progress.dismiss();
+            }
+        });
+    }
+
+    private void move() {
+        if (territory.isExpired()) {
+            Toast.makeText(getActivity(), getString(R.string.message_cant_move), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (gMap != null) {
+            Toast.makeText(getActivity(), getString(R.string.message_begin_move), Toast.LENGTH_SHORT).show();
+            LatLng latLng = territory.getCoordinate().getLatLng();
+            gMap.clear();
+            distanceMarker = territory.getCharacter().getDistanceMarker(latLng);
+            distanceMarker.addTo(gMap);
+            territoryMarker = territory.getMarker();
+            territoryMarker.addTo(gMap);
+            gMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    if (territoryMarker != null) territoryMarker.updateCenter(cameraPosition.target);
+                }
+            });
+
+            toggleSetMenu();
         }
     }
 

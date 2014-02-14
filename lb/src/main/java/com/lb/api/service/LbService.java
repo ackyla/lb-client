@@ -40,6 +40,7 @@ import static com.lb.api.client.ILbConstants.SEGMENT_CREATE;
 import static com.lb.api.client.ILbConstants.SEGMENT_SHOW;
 import static com.lb.api.client.ILbConstants.PARAM_PAGE;
 import static com.lb.api.client.ILbConstants.PARAM_PER;
+import static com.lb.api.client.ILbConstants.SEGMENT_MOVE;
 
 /**
  * Created by ackyla on 1/29/14.
@@ -89,4 +90,8 @@ public interface LbService {
     @FormUrlEncoded
     @POST(SEGMENT_TERRITORIES + SEGMENT_SUPPLY)
     void supplyGpsPoint(@Header(HEADER_AUTHORIZATION) String token, @Field("id") int territoryId, @Field("gps_point") int gpsPoint, Callback<Territory> callback);
+
+    @FormUrlEncoded
+    @POST(SEGMENT_TERRITORIES + SEGMENT_MOVE)
+    void moveTerritory(@Header(HEADER_AUTHORIZATION) String token, @Field("id") int territoryId, @Field("latitude") double latitude, @Field("longitude") double longitude, Callback<Territory> callback);
 }

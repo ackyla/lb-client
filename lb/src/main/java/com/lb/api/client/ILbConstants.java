@@ -30,6 +30,7 @@ public interface ILbConstants {
     String SEGMENT_READ = "/read";
     String SEGMENT_SUPPLY = "/supply";
     String SEGMENT_AVATAR = "/avatar";
+    String SEGMENT_MOVE = "/move";
 
     String PARAM_PAGE = "page";
     String PARAM_PER = "per";

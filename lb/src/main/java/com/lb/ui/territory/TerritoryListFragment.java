@@ -42,7 +42,7 @@ public class TerritoryListFragment extends ListFragment implements AbsListView.O
 
     public TerritoryListFragment() {
     }
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
