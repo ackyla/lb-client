@@ -122,4 +122,8 @@ public class LbClient {
     public void createTerritory(LatLng latLng, int characterId, Callback<Territory> callback) {
         lb.createTerritory(credentials, latLng.latitude, latLng.longitude, characterId, callback);
     }
+
+    public void supplyGpsPoint(int territoryId, int gpsPoint, Callback<Territory> callback) {
+        lb.supplyGpsPoint(credentials, territoryId, gpsPoint, callback);
+    }
 }

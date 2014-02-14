@@ -31,6 +31,7 @@ import static com.lb.api.client.ILbConstants.SEGMENT_DESTROY;
 import static com.lb.api.client.ILbConstants.SEGMENT_LIST;
 import static com.lb.api.client.ILbConstants.SEGMENT_NOTIFICATIONS;
 import static com.lb.api.client.ILbConstants.SEGMENT_READ;
+import static com.lb.api.client.ILbConstants.SEGMENT_SUPPLY;
 import static com.lb.api.client.ILbConstants.SEGMENT_USERS;
 import static com.lb.api.client.ILbConstants.SEGMENT_USER;
 import static com.lb.api.client.ILbConstants.SEGMENT_LOCATIONS;
@@ -86,6 +87,6 @@ public interface LbService {
     void getUserLocations(@Header(HEADER_AUTHORIZATION) String token, @Query("date") Date date, Callback<List<Location>> callback);
 
     @FormUrlEncoded
-    @POST(SEGMENT_TERRITORIES + SEGMENT_DESTROY)
-    void supplyGpsPoint(@Header(HEADER_AUTHORIZATION) String token, @Field("territory_id") int territoryId, @Field("gps_point") int gpsPoint, Callback<Territory> callback);
+    @POST(SEGMENT_TERRITORIES + SEGMENT_SUPPLY)
+    void supplyGpsPoint(@Header(HEADER_AUTHORIZATION) String token, @Field("id") int territoryId, @Field("gps_point") int gpsPoint, Callback<Territory> callback);
 }

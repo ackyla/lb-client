@@ -7,6 +7,7 @@ public interface ILbConstants {
     String AUTH_TOKEN = "token";
 
     String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    int MINUTES_PER_POINT = 10;
 
     String HOST_API = "192.168.11.6:3000";
 

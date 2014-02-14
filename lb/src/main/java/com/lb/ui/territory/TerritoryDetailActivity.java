@@ -17,7 +17,6 @@ import com.lb.Intents;
 import com.lb.R;
 import com.lb.api.Territory;
 import com.lb.ui.MapFragment;
-import com.lb.ui.user.TerritoryDetailMapFragment;
 import com.squareup.picasso.Picasso;
 
 public class TerritoryDetailActivity extends ActionBarActivity implements MapFragment.OnGoogleMapFragmentListener {
@@ -43,19 +42,6 @@ public class TerritoryDetailActivity extends ActionBarActivity implements MapFra
                     .add(R.id.container, TerritoryDetailMapFragment.newInstance(territory))
                     .commit();
         }
-
-        ImageView ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
-        TextView tvName = (TextView) findViewById(R.id.tv_name);
-
-        Picasso.with(this).load("http://placekitten.com/48/48").into(ivAvatar);
-        tvName.setText(territory.getCharacter().getName());
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.territory_detail, menu);
-        return true;
     }
 
     @Override
@@ -63,10 +49,6 @@ public class TerritoryDetailActivity extends ActionBarActivity implements MapFra
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.action_supply:
-                return true;
-            case R.id.action_move:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

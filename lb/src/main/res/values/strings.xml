@@ -22,7 +22,7 @@
     <string name="title_section_notification_list">通知</string>
     <string name="title_activity_character"></string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_territory_detail">TerritoryDetailActivity</string>
+    <string name="title_activity_territory_detail">テリトリー詳細</string>
     <string name="select_character">テリトリーを選んで下さい</string>
     <string name="cancel">キャンセル</string>
     <string name="clear">クリア</string>
@@ -39,10 +39,13 @@
     <string name="message_failure_set_territory">テリトリーを設置できませんでした</string>
     <string name="status_character_cost">消費陣力</string>
     <string name="right_arrow">→</string>
-    <string name="after_set">設置後陣力</string>
+    <string name="point_after_set">設置後陣力</string>
+    <string name="expiration_date_after_supply">回復後期限</string>
     <string name="dialog_title_set_territory">テリトリーを設置します</string>
     <string name="message_network_error">通信エラーが発生しました</string>
     <string name="message_insufficient_point">陣力が足りません</string>
+    <string name="dialog_title_supply">テリトリーを回復します</string>
+    <string name="message_supply">回復しました</string>
     
 
 </resources>
