@@ -2,11 +2,13 @@ package com.lb.ui.notification;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.lb.R;
@@ -23,7 +25,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class NotificationListFragment extends ListFragment implements AbsListView.OnScrollListener {
+public class NotificationListFragment extends ListFragment implements AbsListView.OnScrollListener, AdapterView.OnItemLongClickListener {
 
     private static final int PER = 10;
     private NotificationListAdapter adapter;
@@ -45,6 +47,7 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getListView().setOnItemLongClickListener(this);
         refresh();
     }
 
@@ -65,25 +68,19 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
     }
 
     @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position >= adapter.getCount()) return false;
+        Notification notification = adapter.getItem(position);
+        read(notification, position);
+        return true;
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (position >= adapter.getCount()) return;
         Notification notification = adapter.getItem(position);
 
-        if (!notification.isRead()) {
-            LbClient client = new LbClient();
-            client.setToken(Session.getToken());
-            client.readNotification(notification.getId(), new Callback<Notification>() {
-                @Override
-                public void success(Notification notification, Response response) {
-
-                }
-
-                @Override
-                public void failure(RetrofitError retrofitError) {
-
-                }
-            });
-        }
+        read(notification, position);
 
         if (notification.getNotificationType().equals(Notification.TYPE_ENTERING)) {
 
@@ -92,6 +89,27 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
             if (territory != null) startActivity(TerritoryDetailActivity.createIntent(territory));
         }
 
+    }
+
+    private void read(final Notification notification, final int position) {
+        if (!notification.isRead()) {
+            LbClient client = new LbClient();
+            client.setToken(Session.getToken());
+            client.readNotification(notification.getId(), new Callback<Notification>() {
+                @Override
+                public void success(Notification ReadNotification, Response response) {
+                    notification.setRead(true);
+                    adapter.remove(notification);
+                    adapter.insert(notification, position);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void failure(RetrofitError retrofitError) {
+
+                }
+            });
+        }
     }
 
     private void refresh() {
