@@ -2,11 +2,15 @@ package com.lb.ui.user;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.lb.R;
 import com.lb.api.Territory;
 import com.lb.api.client.LbClient;
 import com.lb.core.territory.TerritoryMarker;
@@ -26,12 +30,12 @@ public class MainMapFragment extends MapFragment implements GoogleMap.OnInfoWind
     private GoogleMap gMap;
 
     public MainMapFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         adapter = new TerritoryInfoWindowAdapter(getActivity());
     }
 
@@ -44,6 +48,23 @@ public class MainMapFragment extends MapFragment implements GoogleMap.OnInfoWind
         gMap.setOnInfoWindowClickListener(this);
         refresh();
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_map, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                refresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void refresh() {
