@@ -69,6 +69,22 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
         if (position >= adapter.getCount()) return;
         Notification notification = adapter.getItem(position);
 
+        if (!notification.isRead()) {
+            LbClient client = new LbClient();
+            client.setToken(Session.getToken());
+            client.readNotification(notification.getId(), new Callback<Notification>() {
+                @Override
+                public void success(Notification notification, Response response) {
+
+                }
+
+                @Override
+                public void failure(RetrofitError retrofitError) {
+
+                }
+            });
+        }
+
         if (notification.getNotificationType().equals(Notification.TYPE_ENTERING)) {
 
         } else if (notification.getNotificationType().equals(Notification.TYPE_DETECTION)) {

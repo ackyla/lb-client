@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.lb.api.Authorization;
 import com.lb.api.Coordinate;
 import com.lb.api.Location;
+import com.lb.api.Notification;
 import com.lb.api.Territory;
 import com.lb.api.User;
 import com.lb.api.service.LbService;
@@ -129,5 +130,9 @@ public class LbClient {
 
     public void moveTerritory(int territoryId, double latitude, double longitude, Callback<Territory> callback) {
         lb.moveTerritory(credentials, territoryId, latitude, longitude, callback);
+    }
+
+    public void readNotification(int notificationId, Callback<Notification> callback) {
+        lb.readNotification(credentials, notificationId, callback);
     }
 }

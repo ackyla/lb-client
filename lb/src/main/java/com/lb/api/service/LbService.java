@@ -82,7 +82,7 @@ public interface LbService {
 
     @FormUrlEncoded
     @POST(SEGMENT_NOTIFICATIONS + SEGMENT_READ)
-    void readNotification(@Header(HEADER_AUTHORIZATION) String token, @Field("notification_id") int notificationId, Callback<Notification> callback);
+    void readNotification(@Header(HEADER_AUTHORIZATION) String token, @Field("id") int notificationId, Callback<Notification> callback);
 
     @GET(SEGMENT_USER + SEGMENT_LOCATIONS)
     void getUserLocations(@Header(HEADER_AUTHORIZATION) String token, @Query("date") Date date, Callback<List<Location>> callback);
