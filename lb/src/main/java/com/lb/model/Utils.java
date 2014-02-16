@@ -105,4 +105,8 @@ public class Utils {
     public static double getDistance(LatLng latLng1, LatLng latLng2) {
         return getDistance(latLng1.latitude, latLng1.longitude, latLng2.latitude, latLng2.longitude);
     }
+
+    public static String getDummyImage(int width, int height) {
+        return "http://placekitten.com/"+width+"/"+height;
+    }
 }
