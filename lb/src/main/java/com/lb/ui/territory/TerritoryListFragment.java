@@ -101,7 +101,6 @@ public class TerritoryListFragment extends ListFragment implements AbsListView.O
                 page = pager.getNextPage();
                 hasMore = pager.hasMore();
                 for (Territory t : pager.getObjects()) adapter.add(t);
-                setListAdapter(adapter);
                 setEmptyText(getString(R.string.empty));
                 setListShown(true);
 
