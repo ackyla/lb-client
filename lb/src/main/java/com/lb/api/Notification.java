@@ -1,6 +1,8 @@
 package com.lb.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.lb.core.notification.EnteringMarker;
+import com.lb.model.Utils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -90,5 +92,14 @@ public class Notification implements Serializable {
 
     public void setTerritory(Territory territory) {
         this.territory = territory;
+    }
+
+    public EnteringMarker getEnteringMarker() {
+        if (!notificationType.equals(TYPE_ENTERING)) return null;
+        return new EnteringMarker(location.getCoordinate().getLatLng());
+    }
+
+    public String getRelativeTimeSpanString() {
+        return Utils.getRelativeTimeSpanString(createdAt);
     }
 }

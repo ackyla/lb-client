@@ -52,6 +52,7 @@
     <string name="message_move">テリトリーを移動しました</string>
     <string name="entering_to">に見つかりました</string>
     <string name="detect_on">で見つけました</string>
+    <string name="title_activity_notification_detail">通知詳細</string>
     
 
 </resources>

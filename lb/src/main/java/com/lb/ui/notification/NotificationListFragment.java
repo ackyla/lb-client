@@ -83,7 +83,7 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
         read(notification, position);
 
         if (notification.getNotificationType().equals(Notification.TYPE_ENTERING)) {
-
+            startActivity(NotificationDetailActivity.createIntent(notification));
         } else if (notification.getNotificationType().equals(Notification.TYPE_DETECTION)) {
             Territory territory = notification.getTerritory();
             if (territory != null) startActivity(TerritoryDetailActivity.createIntent(territory));

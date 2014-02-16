@@ -2,6 +2,7 @@ package com.lb;
 
 import android.content.Intent;
 
+import com.lb.api.Notification;
 import com.lb.api.Territory;
 import com.lb.api.User;
 
@@ -22,6 +23,8 @@ public class Intents {
 
     public static final String EXTRA_TERRITORY = INTENT_EXTRA_PREFIX + "TERRITORY";
 
+    public static final String EXTRA_NOTIFICATION = INTENT_EXTRA_PREFIX + "NOTIFICATION";
+
     public static class Builder {
 
         private final Intent intent;
@@ -36,6 +39,10 @@ public class Intents {
 
         public Builder territory(Territory territory) {
             return add(EXTRA_TERRITORY, territory);
+        }
+
+        public Builder notification(Notification notification) {
+            return add(EXTRA_NOTIFICATION, notification);
         }
 
         public Builder add(String fieldName, Serializable value) {
