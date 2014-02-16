@@ -11,9 +11,11 @@ import android.widget.ListView;
 
 import com.lb.R;
 import com.lb.api.Notification;
+import com.lb.api.Territory;
 import com.lb.api.client.LbClient;
 import com.lb.core.notification.NotificationPager;
 import com.lb.model.Session;
+import com.lb.ui.territory.TerritoryDetailActivity;
 
 import java.util.ArrayList;
 
@@ -66,6 +68,14 @@ public class NotificationListFragment extends ListFragment implements AbsListVie
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (position >= adapter.getCount()) return;
         Notification notification = adapter.getItem(position);
+
+        if (notification.getNotificationType().equals(Notification.TYPE_ENTERING)) {
+
+        } else if (notification.getNotificationType().equals(Notification.TYPE_DETECTION)) {
+            Territory territory = notification.getTerritory();
+            if (territory != null) startActivity(TerritoryDetailActivity.createIntent(territory));
+        }
+
     }
 
     private void refresh() {
