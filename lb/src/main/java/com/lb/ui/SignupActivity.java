@@ -11,6 +11,7 @@ import com.lb.api.client.LbClient;
 import com.lb.model.Session;
 import com.lb.model.Utils;
 import com.lb.ui.user.GameActivity;
+import com.lb.ui.user.MainActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -83,7 +84,7 @@ public class SignupActivity extends Activity implements OnClickListener {
             @Override
             public void success(User user, Response response) {
                 Session.setToken(auth.getToken());
-                startActivity(GameActivity.createIntent(user));
+                startActivity(MainActivity.createIntent(user));
                 overridePendingTransition(0, 0);
                 finish();
                 mProgressDialog.dismiss();
