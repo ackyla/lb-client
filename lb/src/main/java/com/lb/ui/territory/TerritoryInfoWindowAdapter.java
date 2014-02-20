@@ -37,6 +37,9 @@ public class TerritoryInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoContents(Marker marker) {
+        Territory territory = territories.get(marker.getId());
+        if (territory == null) return null;
+
         View v = inflater.inflate(R.layout.territory_info_contents, null);
 
         ImageView ivAvatar = (ImageView) v.findViewById(R.id.iv_avatar);
@@ -44,7 +47,6 @@ public class TerritoryInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView tvDetectionCount = (TextView) v.findViewById(R.id.tv_detection_count);
         TextView tvExpirationDate = (TextView) v.findViewById(R.id.tv_expiration_date);
 
-        Territory territory = territories.get(marker.getId());
         String expirateionDate = territory.isExpired() ? context.getString(R.string.expired) : territory.getRelativeTimeSpanString();
 
         Picasso.with(context).load("http://placekitten.com/48/48").into(ivAvatar);

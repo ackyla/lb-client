@@ -10,6 +10,7 @@ public interface ILbConstants {
     int MINUTES_PER_POINT = 10;
 
     String HOST_API = "192.168.11.6:3000";
+    //String HOST_API = "ackyla.com:3000";
 
     String CONTENT_TYPE_JSON = "application/json";
     String CHARSET_UTF8 = "UTF-8";

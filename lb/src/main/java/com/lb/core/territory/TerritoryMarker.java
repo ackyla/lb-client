@@ -85,17 +85,22 @@ public class TerritoryMarker {
         return mMarker.getId();
     }
 
+    public String getCircleId() {
+        if (mCircle == null) return "0";
+        return mCircle.getId();
+    }
+
     public void showInfoWindow() {
         if (mMarker != null) mMarker.showInfoWindow();
     }
 
     public void show() {
-        mMarker.setVisible(true);
-        mCircle.setVisible(true);
+        if (mMarker != null) mMarker.setVisible(true);
+        if (mCircle != null) mCircle.setVisible(true);
     }
 
     public void hide() {
-        mMarker.setVisible(false);
-        mCircle.setVisible(false);
+        if (mMarker != null) mMarker.setVisible(false);
+        if (mCircle != null ) mCircle.setVisible(false);
     }
 }
